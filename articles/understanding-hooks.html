@@ -1,0 +1,143 @@
+<!DOCTYPE html> <html lang="en" class="no-js"><head ><meta name="keywords" content="reactjs, hooks, typescript, javascript" /> <meta name="description" content="My process of learning of React Hooks and how to 'type' them using Typescript" /> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1." /> <meta name="author" content="Callum Silcock, contact@csi.lk" /> <meta name="reply-to" content="contact@csi.lk" /> <meta name="url" content="https://www.csi.lk" /> <meta name="coverage" content="Worldwide" /> <meta name="distribution" content="Global" /> <meta name="rating" content="General" /> <meta name="revisit-after" content="7 days" /> <meta name="og:type" content="text/html" /> <meta name="og:site_name" content="Callum Silcock | Lead Front End Developer & Conference Speaker" /> <meta name="og:email" content="contact@csi.lk" /> <meta name="og:phone_number" content="+447848472822" /> <meta name="theme-color" content="#26292c" /> <meta rel="icon" href="/favicon.ico" /> <meta rel="icon" href="/favicon.svg" type="image/svg+xml" /> <link rel="canonical" href="https://csi.lk" /> <title >Understanding React Hooks</title> <link rel="stylesheet" href="/styles/index.css?v=2.3.3" /></head> <body ><div hidden><span id="open-new-window">Opens in a new window</span> <span id="open-external">Opens an external site</span> <span id="open-new-window-external">Opens an external site in a new window</span> <span id="open-email">Opens email application</span></div> <div class="page-container fixed" data-testid="page-container"><a href="#content" class="skip"></a> <nav class="navigation"><a class="logo" href="/"><i class="icon-terminal" role="presentation"> </i> <h2 class="logo">Callum 
+ Silcock</h2></a> <a href="/talks">talks</a> <a href="/timeline">timeline</a> <a href="/articles">articles</a></nav> <main ><article id="content" class="article"><h1 >Understanding React Hooks</h1> <div class="article-subheader"><h2 class="article-date">Posted on:  <time datetime="2019-06-20">2019-06-20</time></h2> <a href="https://github.com/csi-lk/csi.lk/tree/master/src/articles/understanding-react-hooks.md" target="_blank" rel="noopener" aria-describedby="open-new-window-external">source</a></div> <p>After spending a few weeks working with and learning React Hooks, I wanted to collate it all into a quick cheatsheet for myself, I hope you can find some value in it.</p>
+<h2>Insights</h2>
+<ul>
+<li>Can refactor all class components to function components
+<ul>
+<li>Ended up with lower filesizes of &gt;15%</li>
+</ul>
+</li>
+<li>Simpler lifecycle methods</li>
+<li>Everything is so much nicer now</li>
+</ul>
+<h2>Hooks</h2>
+<h3>useState</h3>
+<ul>
+<li>replaces all state functions</li>
+<li>type should easily be inferred based on initial value but still worth setting</li>
+</ul>
+<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> [age, setAge] = useState &lt; number &gt; <span class="hljs-number">28</span>
+
+<span class="hljs-keyword">return</span> (
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Fragment</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>I am {age} Years of Age<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> setAge(age + 1)}&gt;Get older! <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">Fragment</span>&gt;</span></span>
+)
+</code></pre>
+<h3>useEffect</h3>
+<ul>
+<li>combines <code>componentDidMount</code> and <code>componentWillUnmount</code> and<code>componetnDidUpdate</code></li>
+<li>no types needed</li>
+</ul>
+<pre><code class="hljs language-js">useEffect(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-comment">// do something on mount</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-comment">// do something on unmount (cleanup)</span>
+  }
+}, []) <span class="hljs-comment">//listen for change to x in [array] then trigger (update), empty for only mount / unmount</span>
+</code></pre>
+<h3>useRef</h3>
+<ul>
+<li>usually used for referencing dom nodes
+<ul>
+<li><code>null</code> can be used as the initial value and a generic html can be used for the ref type</li>
+</ul>
+</li>
+<li>Replaces <code>createRef</code></li>
+<li>Can also be used as a replacement for instance properties on classes
+<ul>
+<li>Type should be inferred</li>
+</ul>
+</li>
+</ul>
+<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> MyInput = <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">const</span> inputRef = useRef &lt; HTMLInputElement &gt; <span class="hljs-literal">null</span>
+  <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">{inputRef}</span> /&gt;</span></span>
+}
+</code></pre>
+<h3>useMemo / useCallback</h3>
+<ul>
+<li>shorthand for memoising functions
+_ types inferred
+_ make sure to specify the types of the parameters of the callback for useCallback, otherwise they will be set to <code>any</code></li>
+</ul>
+<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> value = <span class="hljs-number">10</span>
+<span class="hljs-comment">// inferred as number</span>
+<span class="hljs-keyword">const</span> result = useMemo(<span class="hljs-function">() =&gt;</span> value * <span class="hljs-number">2</span>, [value])
+
+<span class="hljs-keyword">const</span> multiplier = <span class="hljs-number">2</span>
+<span class="hljs-comment">// inferred as (value: number) =&gt; number</span>
+<span class="hljs-keyword">const</span> multiply = useCallback(<span class="hljs-function">(<span class="hljs-params">value: number</span>) =&gt;</span> value * multiplier, [multiplier])
+</code></pre>
+<h3>useReducer</h3>
+<ul>
+<li>Exactly like a redux router
+<ul>
+<li>Typed in the same way</li>
+</ul>
+</li>
+</ul>
+<pre><code class="hljs language-js">interface State {
+  <span class="hljs-attr">value</span>: number;
+}
+
+type Action =
+  | { <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;increment&#x27;</span> }
+  | { <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;decrement&#x27;</span> }
+  | { <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;incrementAmount&#x27;</span>, <span class="hljs-attr">amount</span>: number }
+
+<span class="hljs-keyword">const</span> counterReducer = <span class="hljs-function">(<span class="hljs-params">state: State, action: Action</span>) =&gt;</span> {
+  <span class="hljs-keyword">switch</span> (action.type) {
+    <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;increment&#x27;</span>:
+      <span class="hljs-keyword">return</span> { <span class="hljs-attr">value</span>: state.value + <span class="hljs-number">1</span> }
+    <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;decrement&#x27;</span>:
+      <span class="hljs-keyword">return</span> { <span class="hljs-attr">value</span>: state.value - <span class="hljs-number">1</span> }
+    <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;incrementAmount&#x27;</span>:
+      <span class="hljs-keyword">return</span> { <span class="hljs-attr">value</span>: state.value + action.amount }
+    <span class="hljs-attr">default</span>:
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>()
+  }
+}
+
+<span class="hljs-keyword">const</span> [state, dispatch] = useReducer(counterReducer, { <span class="hljs-attr">value</span>: <span class="hljs-number">0</span> })
+
+dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;increment&#x27;</span> })
+dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;decrement&#x27;</span> })
+dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;incrementAmount&#x27;</span>, <span class="hljs-attr">amount</span>: <span class="hljs-number">10</span> })
+
+<span class="hljs-comment">// TypeScript compilation error</span>
+dispatch({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;invalidActionType&#x27;</span> })
+</code></pre>
+<h3>useContext</h3>
+<ul>
+<li>infer its types based on the context object that is passed in</li>
+</ul>
+<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> ThemeContext = React.createContext(<span class="hljs-string">&#x27;light&#x27;</span>)
+
+<span class="hljs-keyword">const</span> Display = <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">const</span> theme = useContext(ThemeContext)
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+      <span class="hljs-attr">style</span>=
+    &gt;</span>
+      {&#x27;The theme here is &#x27; + theme}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+  )
+}
+</code></pre>
+<h3>useDebugValue</h3>
+<ul>
+<li>used for displaying values in React Developer Tools</li>
+<li>type is inferred</li>
+</ul>
+<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> date = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()
+useDebugValue(date, <span class="hljs-function"><span class="hljs-params">date</span> =&gt;</span> date.toISOString())
+</code></pre>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://react-hooks-cheatsheet.surge.sh/" class="external" target="_blank" rel="noopener noreferrer">A great cheatsheet with live editable examples</a></li>
+<li><a href="https://egghead.io/courses/reusable-state-and-effects-with-react-hooks" class="external" target="_blank" rel="noopener noreferrer">Straightforward egghead course by Elijah Manor</a></li>
+<li><a href="https://medium.com/@jrwebdev/react-hooks-in-typescript-88fce7001d0d" class="external" target="_blank" rel="noopener noreferrer">How to 'type' React Hooks</a></li>
+</ul>
+</article></main> <footer class="footer undefined" data-testid="footer"><div ><p >© 2021</p> <a href="/">Callum Silcock</a></div> <div ><p >Contact</p> <a href="mailto:contact@csi.lk" target="_blank" rel="noopener noreferrer" aria-describedby="open-email">Email</a></div> <div ><p >Code</p> <a href="https://github.com/csi-lk/" target="_blank" rel="noopener noreferrer" aria-describedby="open-new-window-external">Github</a></div> <div ><p >Social</p> <a href="https://au.linkedin.com/in/callumsilcock" target="_blank" rel="noopener noreferrer" aria-describedby="open-new-window-external">LinkedIn</a> / <a href="https://stackoverflow.com/users/766958/csilk" target="_blank" rel="noopener noreferrer" aria-describedby="open-new-window-external">Stackoverflow</a></div></footer></div></body></html>
